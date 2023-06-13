@@ -1,13 +1,27 @@
+//requiring express and port
 const express = require('express');
-const path = require('path');
 const port = 8000;
-
 const app = express();
 
+//requiring path module
+const path = require('path');
+
+const csv = require('csv-parser');
+
+//importing library body parser for authentication
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+
+//Importing mongoose databaase
+const db = require('./config/mongoose');
+
+//Use express static to access assets
 app.use(express.static('./assets'));
 
-
+//Use library express-ejs-layouts
 const expresslayouts = require('express-ejs-layouts');
+const { start } = require('repl');
 app.use(expresslayouts);
 app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
@@ -17,8 +31,11 @@ app.set('layout extractScripts', true);
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
+//requiring routes
 app.use('/', require('./routes'));
 
+
+//starting server with app.listen
 app.listen(port, function (err) {
     if (err) {
         console.log('Error in running the port', err);
